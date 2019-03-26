@@ -1,5 +1,9 @@
 package main
 
+// Ideas:
+// * http://ip-api.com/
+// * https://metrics.torproject.org/exonerator.html
+
 import (
 	"fmt"
 	"strings"

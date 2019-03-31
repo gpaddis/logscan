@@ -30,6 +30,12 @@ func getUserAgent(s string) string {
 	return strings.Split(s, "\"")[5]
 }
 
+func getDateTime(s string) string {
+	r, _ := regexp.Compile(`\[.+\]`)
+	dateTime := r.FindString(s)
+	return strings.Trim(dateTime, "[]")
+}
+
 func main() {
 	fmt.Println("Logscan")
 }

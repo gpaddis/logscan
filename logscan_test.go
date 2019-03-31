@@ -33,3 +33,9 @@ func TestGetUserAgent(t *testing.T) {
 	got := getUserAgent(rawEntry)
 	assertEquals(t, expected, got)
 }
+
+func TestGetDateTime(t *testing.T) {
+	expected := "12/Dec/2015:18:25:11 +0100"
+	got := getDateTime(rawEntry)
+	assertEquals(t, expected, got)
+}

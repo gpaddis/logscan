@@ -6,6 +6,7 @@ package main
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 )
 
@@ -14,7 +15,9 @@ func getIPAddress(s string) string {
 }
 
 func getResponseStatus(s string) string {
-	return strings.Fields(s)[8]
+	r, _ := regexp.Compile(`\s(\d{3})\s`)
+	status := r.FindString(s)
+	return strings.TrimSpace(status)
 }
 
 func main() {

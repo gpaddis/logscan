@@ -20,6 +20,12 @@ func getResponseStatus(s string) string {
 	return strings.TrimSpace(status)
 }
 
+func getRequestURI(s string) string {
+	r, _ := regexp.Compile(`\s/\S+.\b`)
+	URI := r.FindString(s)
+	return strings.TrimSpace(URI)
+}
+
 func main() {
 	fmt.Println("Logscan")
 }

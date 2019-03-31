@@ -10,6 +10,24 @@ import (
 	"strings"
 )
 
+type logEntry struct {
+	ip       string
+	status   string
+	uri      string
+	agent    string
+	datetime string
+}
+
+func createLogEntry(s string) logEntry {
+	return logEntry{
+		ip:       getIPAddress(s),
+		status:   getResponseStatus(s),
+		uri:      getRequestURI(s),
+		agent:    getUserAgent(s),
+		datetime: getDateTime(s),
+	}
+}
+
 func getIPAddress(s string) string {
 	return strings.Fields(s)[0]
 }

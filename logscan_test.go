@@ -39,3 +39,18 @@ func TestGetDateTime(t *testing.T) {
 	got := getDateTime(rawEntry)
 	assertEquals(t, expected, got)
 }
+
+func TestCreateLogEntry(t *testing.T) {
+	raw := `127.0.0.1 - - [12/Dec/2015:18:25:11 +0100] "GET /test.php HTTP/1.1" 200 4263 "-" "Mozilla/5.0 (Windows NT 6.0; rv:34.0) Gecko/20100101 Firefox/34.0" "-"`
+	expected := logEntry{
+		ip:       "127.0.0.1",
+		status:   "200",
+		uri:      "/test.php",
+		agent:    "Mozilla/5.0 (Windows NT 6.0; rv:34.0) Gecko/20100101 Firefox/34.0",
+		datetime: "12/Dec/2015:18:25:11 +0100",
+	}
+	got := createLogEntry(raw)
+	if got != expected {
+		t.Error("Error creating a log entry.")
+	}
+}

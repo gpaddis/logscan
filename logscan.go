@@ -9,8 +9,12 @@ import (
 	"strings"
 )
 
-func getIpAddress(logEntry string) string {
-	return strings.Fields(logEntry)[0]
+func getIPAddress(s string) string {
+	return strings.Fields(s)[0]
+}
+
+func getResponseStatus(s string) string {
+	return strings.Fields(s)[8]
 }
 
 func main() {

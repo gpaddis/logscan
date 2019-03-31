@@ -26,6 +26,10 @@ func getRequestURI(s string) string {
 	return strings.TrimSpace(URI)
 }
 
+func getUserAgent(s string) string {
+	return strings.Split(s, "\"")[5]
+}
+
 func main() {
 	fmt.Println("Logscan")
 }

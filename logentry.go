@@ -40,11 +40,11 @@ func getIPAddress(s string) string {
 }
 
 func getResponseStatus(s string) string {
-	return strings.Split(s, " ")[8]
+	return strings.Fields(s)[8]
 }
 
 func getRequestURI(s string) string {
-	return strings.Split(s, " ")[6]
+	return strings.Fields(s)[6]
 }
 
 func getUserAgent(s string) string {
@@ -52,7 +52,7 @@ func getUserAgent(s string) string {
 }
 
 func getDateTime(s string) string {
-	splitted := strings.Split(s, " ")
+	splitted := strings.Fields(s)
 	dateTime := splitted[3] + " " + splitted[4]
 	return strings.Trim(dateTime, "[]")
 }

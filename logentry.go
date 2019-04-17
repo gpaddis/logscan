@@ -23,13 +23,12 @@ func createLogEntry(s string) logEntry {
 	}
 }
 
-// Return true if a logEntry URI matches the threat pattern.
+// Return true if a raw entry matches the threat pattern.
 // The patterns are matched both in lower and upper case.
-func (l logEntry) hasPotentialThreats() bool {
+func hasPotentialThreats(raw string) bool {
 	threats := []string{"%20AND", "UNION", "SELECT%20", "CONCAT", "%20WHERE"}
-	URI := strings.ToUpper(l.uri)
 	for _, t := range threats {
-		if strings.Contains(URI, t) {
+		if strings.Contains(strings.ToUpper(raw), t) {
 			return true
 		}
 	}

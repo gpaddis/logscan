@@ -67,8 +67,9 @@ func scan(logfile string) report {
 
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
-		l := createLogEntry(scanner.Text())
-		if l.hasPotentialThreats() {
+		raw := scanner.Text()
+		if hasPotentialThreats(raw) {
+			l := createLogEntry(raw)
 			report.update(l)
 		}
 	}

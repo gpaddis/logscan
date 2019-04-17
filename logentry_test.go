@@ -58,15 +58,13 @@ func TestCreateLogEntry(t *testing.T) {
 func TestHasPotentialThreats(t *testing.T) {
 	// Uppercase
 	raw := `127.0.0.1 - - [12/Dec/2015:18:25:11 +0100] "GET /test.php?name=Downloads&d_op=modifydownloadrequest&%20lid=-1%20UNION%20SELECT%200,username,user_id,user_password,name,%20user_email,user_level,0,0%20FROM%20nuke_users HTTP/1.1" 200 4263 "-" "Mozilla/5.0 (Windows NT 6.0; rv:34.0) Gecko/20100101 Firefox/34.0" "-"`
-	l := createLogEntry(raw)
-	if l.hasPotentialThreats() != true {
+	if hasPotentialThreats(raw) != true {
 		t.Error("Error: potential threats were not identified.")
 	}
 
 	// Lowercase
 	raw = `127.0.0.1 - - [12/Dec/2015:18:25:11 +0100] "GET /test.php?name=Downloads&d_op=modifydownloadrequest&%20lid=-1%20union%20select%200,username,user_id,user_password,name,%20user_email,user_level,0,0%20from%20nuke_users HTTP/1.1" 200 4263 "-" "Mozilla/5.0 (Windows NT 6.0; rv:34.0) Gecko/20100101 Firefox/34.0" "-"`
-	l = createLogEntry(raw)
-	if l.hasPotentialThreats() != true {
+	if hasPotentialThreats(raw) != true {
 		t.Error("Error: potential threats were not identified.")
 	}
 }

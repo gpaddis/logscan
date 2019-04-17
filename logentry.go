@@ -13,6 +13,7 @@ type logEntry struct {
 	datetime string
 }
 
+// Create a logEntry from a raw Apache access.log string.
 func createLogEntry(s string) logEntry {
 	return logEntry{
 		ip:       getIPAddress(s),
@@ -23,6 +24,7 @@ func createLogEntry(s string) logEntry {
 	}
 }
 
+// Return true if a logEntry URI matches the threat pattern.
 func (l logEntry) hasPotentialThreats() bool {
 	threats := `%20AND|UNION|SELECT|CHAR|CONCAT`
 	match, _ := regexp.Match(threats, []byte(l.uri))
@@ -34,15 +36,11 @@ func getIPAddress(s string) string {
 }
 
 func getResponseStatus(s string) string {
-	r, _ := regexp.Compile(`\s(\d{3})\s`)
-	status := r.FindString(s)
-	return strings.TrimSpace(status)
+	return strings.Split(s, " ")[8]
 }
 
 func getRequestURI(s string) string {
-	r, _ := regexp.Compile(`\s/\S+.\b`)
-	URI := r.FindString(s)
-	return strings.TrimSpace(URI)
+	return strings.Split(s, " ")[6]
 }
 
 func getUserAgent(s string) string {
@@ -50,7 +48,7 @@ func getUserAgent(s string) string {
 }
 
 func getDateTime(s string) string {
-	r, _ := regexp.Compile(`\[.+\]`)
-	dateTime := r.FindString(s)
+	splitted := strings.Split(s, " ")
+	dateTime := splitted[3] + " " + splitted[4]
 	return strings.Trim(dateTime, "[]")
 }

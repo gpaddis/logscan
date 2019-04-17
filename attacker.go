@@ -5,6 +5,8 @@ type attacker struct {
 	userAgent         string
 	statusCodes       []string
 	exampleRequest    string
+	firstRequest      string
+	lastRequest       string
 	maliciousRequests int
 }
 
@@ -13,12 +15,19 @@ func (a *attacker) incrementMaliciousRequests() {
 	a.maliciousRequests++
 }
 
+// Add new status codes to the existing slice.
 func (a *attacker) updateStatusCodes(s string) {
 	if a.hasStatusCode(s) == false {
 		a.statusCodes = append(a.statusCodes, s)
 	}
 }
 
+// Update the datetime of the last request.
+func (a *attacker) updateLastRequest(d string) {
+	a.lastRequest = d
+}
+
+// Return true if the status code is already in the slice.
 func (a *attacker) hasStatusCode(s string) bool {
 	for _, a := range a.statusCodes {
 		if a == s {

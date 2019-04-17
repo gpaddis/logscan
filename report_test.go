@@ -58,11 +58,3 @@ func TestUpdateReportEntry(t *testing.T) {
 		t.Errorf("Expecting 2 malicious requests, got %d.", got)
 	}
 }
-
-func TestIncrementMaliciousRequests(t *testing.T) {
-	a := attacker{maliciousRequests: 1}
-	a.incrementMaliciousRequests()
-	if got := a.maliciousRequests; got != 2 {
-		t.Errorf("Expecting 2 malicious requests, got %d.", got)
-	}
-}

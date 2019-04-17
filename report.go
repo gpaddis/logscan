@@ -8,14 +8,6 @@ import (
 
 type report map[string]*attacker
 
-type attacker struct {
-	ip                string
-	userAgent         string
-	statusCodes       []string
-	exampleRequest    string
-	maliciousRequests int
-}
-
 // Check if the report already contains the IP of an attacker.
 func (r report) hasIP(ip string) bool {
 	if _, ok := r[ip]; ok {
@@ -37,11 +29,6 @@ func (r report) update(l logEntry) {
 			maliciousRequests: 1,
 		}
 	}
-}
-
-// Increment the count of malicious requests from an attacker.
-func (a *attacker) incrementMaliciousRequests() {
-	a.maliciousRequests++
 }
 
 // Scan all entries and collect the ones containing suspicious requests.

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"os"
@@ -23,7 +24,20 @@ func main() {
 	// Collect and parse parameters
 	accesslogPtr := flag.String("logfile", "", "The access.log file you want to analyze")
 	strictPtr := flag.Bool("strict", false, "Strict mode: return with error code 1 when threats are found")
+	stdinPtr := flag.Bool("stdin", false, "Parse information from stdin instead of scanning a log file")
 	flag.Parse()
+
+	if *stdinPtr == true {
+		fmt.Println("Scanning stdin... (press CTRL+C to exit)")
+		scanner := bufio.NewScanner(os.Stdin)
+		for scanner.Scan() {
+			if raw := scanner.Text(); hasPotentialThreats(raw) {
+				l := createLogEntry(raw)
+				fmt.Printf("%s attack detected from %s: %s (on %s)\n", Red("[+]"), Bold(l.ip), l.uri, l.datetime)
+			}
+		}
+		os.Exit(1)
+	}
 
 	if *accesslogPtr == "" {
 		flag.Usage()

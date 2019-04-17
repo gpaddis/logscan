@@ -31,5 +31,6 @@ func main() {
 	// Print the data to stdout
 	// Exit with status 0 or 1
 	fmt.Println("Logscan")
-	scan(*accesslogPtr)
+	report := scan(*accesslogPtr)
+	report.print()
 }

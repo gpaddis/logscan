@@ -32,8 +32,20 @@ func (r report) update(l logEntry) {
 	}
 }
 
+// Print a report on screen with the list of attackers.
+func (r report) print() {
+	for _, a := range r {
+		fmt.Println("Potential threat:")
+		fmt.Printf("Got %d malicious requests from %s with following status codes: ", a.maliciousRequests, a.ip)
+		for _, s := range a.statusCodes {
+			fmt.Printf("%s ", s)
+		}
+		fmt.Printf("\nExample request: %s\n", a.exampleRequest)
+	}
+}
+
 // Scan all entries and collect the ones containing suspicious requests.
-func scan(logfile string) {
+func scan(logfile string) report {
 	report := make(report)
 
 	f, err := os.Open(logfile)
@@ -42,18 +54,11 @@ func scan(logfile string) {
 
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
-		e := createLogEntry(scanner.Text())
-		if e.hasPotentialThreats() {
-			// check if report already contains an attacker
-			if report.hasIP(e.ip) {
-				// update the attacker info
-				fmt.Println("Ip is in map")
-			} else {
-				// otherwise create an attacker and add it to the report
-				fmt.Println("Value not in map. Adding...")
-				report[e.ip] = &attacker{}
-			}
-			// add the info
+		l := createLogEntry(scanner.Text())
+		if l.hasPotentialThreats() {
+			report.update(l)
 		}
 	}
+
+	return report
 }

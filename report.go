@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+
+	. "github.com/logrusorgru/aurora"
 )
 
 type report map[string]*attacker
@@ -34,18 +36,20 @@ func (r report) update(l logEntry) {
 
 // Print a report on screen with the list of attackers.
 func (r report) print() {
+	fmt.Println(Red("Potential threats found:"))
 	for _, a := range r {
-		fmt.Println("Potential threat:")
-		fmt.Printf("Got %d malicious requests from %s with following status codes: ", a.maliciousRequests, a.ip)
+		fmt.Printf("%s Got %d malicious requests from %s ", Red("[+]"), Bold(a.maliciousRequests), Bold(a.ip))
+		fmt.Printf("between x and x\n") // TODO: implement time range
+		fmt.Printf("Status codes: ")
 		for _, s := range a.statusCodes {
-			fmt.Printf("%s ", s)
+			fmt.Printf("%s ", Bold(s))
 		}
-		fmt.Printf("\nExample request: %s\n", a.exampleRequest)
+		fmt.Printf("\nExample request: %s\n\n", a.exampleRequest)
 	}
 }
 
 // Scan all entries and collect the ones containing suspicious requests.
-func scan(logfile string) report {
+func scan(logfile string) *report {
 	report := make(report)
 
 	f, err := os.Open(logfile)
@@ -60,5 +64,5 @@ func scan(logfile string) report {
 		}
 	}
 
-	return report
+	return &report
 }

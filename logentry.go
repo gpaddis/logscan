@@ -24,7 +24,7 @@ func createLogEntry(s string) logEntry {
 }
 
 func (l logEntry) hasPotentialThreats() bool {
-	threats := `UNION|SELECT|CHAR|CONCAT`
+	threats := `%20AND|UNION|SELECT|CHAR|CONCAT`
 	match, _ := regexp.Match(threats, []byte(l.uri))
 	return match
 }

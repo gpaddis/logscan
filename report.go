@@ -40,6 +40,7 @@ func (r report) print() {
 	for _, a := range r {
 		fmt.Printf("%s Got %d malicious requests from %s ", Red("[+]"), Bold(a.maliciousRequests), Bold(a.ip))
 		fmt.Printf("between x and x\n") // TODO: implement time range
+		fmt.Printf("User agent: %s\n", a.userAgent)
 		fmt.Printf("Status codes: ")
 		for _, s := range a.statusCodes {
 			fmt.Printf("%s ", Bold(s))
@@ -48,10 +49,10 @@ func (r report) print() {
 	}
 }
 
-// Scan all entries and collect the ones containing suspicious requests.
-func scan(logfile string) *report {
+// Scan all entries and return the ones containing suspicious
+// requests in a report.
+func scan(logfile string) report {
 	report := make(report)
-
 	f, err := os.Open(logfile)
 	check(err)
 	defer f.Close()
@@ -64,5 +65,5 @@ func scan(logfile string) *report {
 		}
 	}
 
-	return &report
+	return report
 }

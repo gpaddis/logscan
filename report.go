@@ -20,6 +20,7 @@ func (r report) hasIP(ip string) bool {
 func (r report) update(l logEntry) {
 	if r.hasIP(l.ip) {
 		r[l.ip].incrementMaliciousRequests()
+		r[l.ip].updateStatusCodes(l.status)
 	} else {
 		r[l.ip] = &attacker{
 			ip:                l.ip,

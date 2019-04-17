@@ -57,4 +57,8 @@ func TestUpdateReportEntry(t *testing.T) {
 	if got := r[l.ip].maliciousRequests; got != 2 {
 		t.Errorf("Expecting 2 malicious requests, got %d.", got)
 	}
+
+	if got := r[l.ip].statusCodes; len(got) != 1 {
+		t.Errorf("Expecting 1 status code, got %d.", len(got))
+	}
 }

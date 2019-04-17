@@ -22,9 +22,10 @@ func check(e error) {
 
 func main() {
 	// Collect and parse parameters
-	accesslogPtr := flag.String("logfile", "", "The access.log file you want to analyze")
-	strictPtr := flag.Bool("strict", false, "Strict mode: return with error code 1 when threats are found")
-	stdinPtr := flag.Bool("stdin", false, "Parse information from stdin instead of scanning a log file")
+	accesslogPtr := flag.String("l", "", "The access.log file you want to analyze")
+	strictPtr := flag.Bool("s", false, "Strict mode: return with error code 1 when threats are found")
+	stdinPtr := flag.Bool("i", false, "Parse information from stdin instead of scanning a log file")
+	verbosePtr := flag.Bool("v", false, "Print verbose information")
 	flag.Parse()
 
 	if *stdinPtr == true {
@@ -33,7 +34,10 @@ func main() {
 		for scanner.Scan() {
 			if raw := scanner.Text(); hasPotentialThreats(raw) {
 				l := createLogEntry(raw)
-				fmt.Printf("%s attack detected from %s: %s (on %s)\n", Red("[+]"), Bold(l.ip), l.uri, l.datetime)
+				fmt.Printf("%s attack detected from %s: %s\n", Red("[+]"), Red(l.ip), l.uri)
+				if *verbosePtr == true {
+					fmt.Printf("Status: %s, Time: %s, User Agent: %s\n", l.status, l.datetime, l.agent)
+				}
 			}
 		}
 		os.Exit(1)

@@ -46,14 +46,7 @@ func (r report) print() {
 
 	fmt.Println(Red("Potential threats found:"))
 	for _, a := range r {
-		fmt.Printf("%s Got %d malicious requests from IP address %s ", Red("[+]"), Bold(a.maliciousRequests), Bold(a.ip))
-		fmt.Printf("between %s and %s\n", a.firstRequest, a.lastRequest)
-		fmt.Printf("User agent: %s\n", a.userAgent)
-		fmt.Printf("Status codes: ")
-		for _, s := range a.statusCodes {
-			fmt.Printf("%s ", Bold(s))
-		}
-		fmt.Printf("\nExample request: %s\n\n", a.exampleRequest)
+		a.printRecap()
 	}
 }
 

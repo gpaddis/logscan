@@ -8,8 +8,9 @@ import (
 
 // Ideas:
 // * http://ip-api.com/
-// * https://metrics.torproject.org/exonerator.html
+// * https://check.torproject.org/cgi-bin/TorBulkExitList.py
 
+// Panic when an error occurs.
 func check(e error) {
 	if e != nil {
 		panic(e)

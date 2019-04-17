@@ -4,6 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"os"
+
+	. "github.com/logrusorgru/aurora"
 )
 
 // Ideas:
@@ -18,7 +20,7 @@ func check(e error) {
 }
 
 func main() {
-	// Get and parse parameters
+	// Collect and parse parameters
 	accesslogPtr := flag.String("logfile", "", "The access.log file you want to analyze")
 	strictPtr := flag.Bool("strict", false, "Strict mode: return with error code 1 when threats are found")
 	flag.Parse()
@@ -36,10 +38,13 @@ func main() {
 	// Scan the access.log file
 	fmt.Println("Scanning the access.log...")
 	report := scan(*accesslogPtr)
+	if len(report) == 0 {
+		fmt.Println(Green("No threats found."))
+		os.Exit(0)
+	}
 
 	// Print the data to stdout
 	report.print()
-
 	if *strictPtr == true {
 		os.Exit(1)
 	}

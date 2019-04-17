@@ -39,11 +39,6 @@ func (r report) update(l logEntry) {
 
 // Print a report on screen with the list of attackers.
 func (r report) print() {
-	if len(r) == 0 {
-		fmt.Println(Green("No threats found."))
-		os.Exit(0)
-	}
-
 	fmt.Println(Red("Potential threats found:"))
 	for _, a := range r {
 		a.printRecap()

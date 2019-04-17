@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-type report map[string]attacker
+type report map[string]*attacker
 
 type attacker struct {
 	ip                string
@@ -27,12 +27,9 @@ func (r report) hasIP(ip string) bool {
 // Add an attacker entry to the report or update an existing one.
 func (r report) update(l logEntry) {
 	if r.hasIP(l.ip) {
-		// TODO: how to work with a pointer and update the struct field?
-		a := r[l.ip]
-		a.incrementMaliciousRequests()
-		r[l.ip] = a
+		r[l.ip].incrementMaliciousRequests()
 	} else {
-		r[l.ip] = attacker{
+		r[l.ip] = &attacker{
 			ip:                l.ip,
 			userAgent:         l.agent,
 			exampleRequest:    l.uri,
@@ -66,7 +63,7 @@ func scan(logfile string) {
 			} else {
 				// otherwise create an attacker and add it to the report
 				fmt.Println("Value not in map. Adding...")
-				report[e.ip] = attacker{}
+				report[e.ip] = &attacker{}
 			}
 			// add the info
 		}

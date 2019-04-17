@@ -10,7 +10,7 @@ func TestHasIP(t *testing.T) {
 		t.Error("Got true, expecting false.")
 	}
 
-	r[ip] = attacker{}
+	r[ip] = &attacker{}
 	if r.hasIP(ip) == false {
 		t.Error("Got false, expecting true.")
 	}

@@ -10,8 +10,9 @@ import (
 	. "github.com/logrusorgru/aurora"
 )
 
+const AppVersion = "1.0.0"
+
 // Ideas:
-// * http://ip-api.com/
 // * https://check.torproject.org/cgi-bin/TorBulkExitList.py
 
 // Panic when an error occurs.
@@ -69,28 +70,34 @@ func scanStdin(verbose bool) {
 
 func main() {
 	// Collect and parse parameters
-	accesslogPtr := flag.String("l", "", "The access.log file you want to analyze")
-	strictPtr := flag.Bool("s", false, "Strict mode: return with error code 1 when threats are found")
-	stdinPtr := flag.Bool("i", false, "Parse information from stdin instead of scanning a log file")
-	verbosePtr := flag.Bool("v", false, "Print verbose information")
+	logfile := flag.String("l", "", "The access.log file you want to analyze")
+	strict := flag.Bool("s", false, "Strict mode: return with error code 1 when threats are found")
+	stdin := flag.Bool("i", false, "Parse information from stdin instead of scanning a log file")
+	verbose := flag.Bool("v", false, "Print verbose information")
+	version := flag.Bool("version", false, "Print the logscan version and exit")
 	flag.Parse()
 
-	if *stdinPtr == true {
-		scanStdin(*verbosePtr)
+	if *version == true {
+		fmt.Println("logscan version:", AppVersion)
+		os.Exit(0)
 	}
 
-	if *accesslogPtr == "" {
+	if *stdin == true {
+		scanStdin(*verbose)
+	}
+
+	if *logfile == "" {
 		flag.Usage()
 		os.Exit(1)
 	}
 
-	if _, err := os.Stat(*accesslogPtr); os.IsNotExist(err) {
+	if _, err := os.Stat(*logfile); os.IsNotExist(err) {
 		fmt.Fprintf(os.Stderr, "Error - %v\n", err)
 		os.Exit(1)
 	}
 
 	// Scan the access.log file
-	report := scan(*accesslogPtr, *verbosePtr)
+	report := scan(*logfile, *verbose)
 	if len(report) == 0 {
 		fmt.Println(Green("No threats found."))
 		os.Exit(0)
@@ -99,10 +106,10 @@ func main() {
 	// Print the data to stdout
 	fmt.Println(Red("Potential threats found:"))
 	for _, a := range report {
-		a.printRecap(*verbosePtr)
+		a.printRecap(*verbose)
 	}
 
-	if *strictPtr == true {
+	if *strict == true {
 		os.Exit(1)
 	}
 }

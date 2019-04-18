@@ -64,6 +64,7 @@ func scanStdin(verbose bool) {
 			}
 		}
 	}
+	os.Exit(0)
 }
 
 func main() {

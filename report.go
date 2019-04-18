@@ -1,11 +1,5 @@
 package main
 
-import (
-	"fmt"
-
-	. "github.com/logrusorgru/aurora"
-)
-
 type report map[string]*attacker
 
 // Check if the report already contains the IP of an attacker.
@@ -32,13 +26,5 @@ func (r report) update(l logEntry) {
 			lastRequest:       l.datetime,
 			maliciousRequests: 1,
 		}
-	}
-}
-
-// Print a report on screen with the list of attackers.
-func (r report) print() {
-	fmt.Println(Red("Potential threats found:"))
-	for _, a := range r {
-		a.printRecap()
 	}
 }

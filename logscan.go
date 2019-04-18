@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"time"
 
 	. "github.com/logrusorgru/aurora"
 )
@@ -22,7 +23,7 @@ func check(e error) {
 
 // Scan all entries and return the ones containing suspicious
 // requests in a report.
-func scan(logfile string) report {
+func scan(logfile string, verbose bool) report {
 	fmt.Printf("Scanning %s...\n", logfile)
 	report := make(report)
 	f, err := os.Open(logfile)
@@ -30,7 +31,10 @@ func scan(logfile string) report {
 	defer f.Close()
 
 	scanner := bufio.NewScanner(f)
+	start := time.Now()
+	lineCount := 0
 	for scanner.Scan() {
+		lineCount++
 		raw := scanner.Text()
 		if hasPotentialThreats(raw) {
 			l := createLogEntry(raw)
@@ -38,6 +42,12 @@ func scan(logfile string) report {
 		}
 	}
 
+	if verbose {
+		elapsed := time.Since(start)
+		handle, _ := f.Stat()
+		sizeMB := handle.Size() / 1000000
+		fmt.Printf("Scanned %d requests (%d MB) in %.2f seconds.\n\n", lineCount, sizeMB, elapsed.Seconds())
+	}
 	return report
 }
 
@@ -79,14 +89,18 @@ func main() {
 	}
 
 	// Scan the access.log file
-	report := scan(*accesslogPtr)
+	report := scan(*accesslogPtr, *verbosePtr)
 	if len(report) == 0 {
 		fmt.Println(Green("No threats found."))
 		os.Exit(0)
 	}
 
 	// Print the data to stdout
-	report.print()
+	fmt.Println(Red("Potential threats found:"))
+	for _, a := range report {
+		a.printRecap()
+	}
+
 	if *strictPtr == true {
 		os.Exit(1)
 	}

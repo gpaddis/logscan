@@ -27,10 +27,18 @@ func TestQueryIpApi(t *testing.T) {
 	}
 }
 
-func TestGeoLocate(t *testing.T) {
+func TestGeoLocateExistingIp(t *testing.T) {
 	attacker := attacker{ip: "172.217.18.174"}
 	locInfo, _ := attacker.geoLocate()
 	if locInfo["as"] != "AS15169 Google LLC" {
 		t.Errorf("Expecting AS15169 Google LLC, got %s.", locInfo["as"])
+	}
+}
+
+func TestGeoLocateReservedIp(t *testing.T) {
+	attacker := attacker{ip: "127.0.0.1"}
+	_, err := attacker.geoLocate()
+	if err == nil {
+		t.Errorf("Expecting geoLocate() to fail, got a positive response instead..")
 	}
 }

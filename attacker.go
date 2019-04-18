@@ -10,6 +10,8 @@ import (
 	. "github.com/logrusorgru/aurora"
 )
 
+type geoLocationInfo map[string]interface{}
+
 type attacker struct {
 	ip                string
 	userAgent         string
@@ -59,8 +61,8 @@ func queryIpApi(ip string) []byte {
 }
 
 // Return a map of strings containing the geolocation info.
-func (a *attacker) geoLocate() (map[string]interface{}, error) {
-	res := queryIpApi(a.ip)
+func geoLocate(ip string) (geoLocationInfo, error) {
+	res := queryIpApi(ip)
 	var result map[string]interface{}
 	err := json.Unmarshal(res, &result)
 	check(err)
@@ -68,6 +70,16 @@ func (a *attacker) geoLocate() (map[string]interface{}, error) {
 		return nil, errors.New("Failed to geolocate the ip address.")
 	}
 	return result, nil
+}
+
+// Print geolocation information if the request was successful.
+func (i geoLocationInfo) print() {
+	if i["status"] == "fail" {
+		fmt.Printf("\nno geolocation info available\n")
+	} else {
+		fmt.Printf("\nGeolocation info: %s, %s\n", i["city"], i["country"])
+		fmt.Printf("Organization: %s\n", i["org"])
+	}
 }
 
 // Print aggregated info on an attacker in the log file.
@@ -80,13 +92,8 @@ func (a *attacker) printRecap(verbose bool) {
 		for _, s := range a.statusCodes {
 			fmt.Printf("%s ", Bold(s))
 		}
-		loc, err := a.geoLocate()
-		if err != nil {
-			fmt.Printf("\nno geolocation info available\n")
-		} else {
-			fmt.Printf("\nGeolocation info: %s, %s\n", loc["city"], loc["country"])
-			fmt.Printf("Organization: %s\n", loc["org"])
-		}
+		locInfo, _ := geoLocate(a.ip)
+		locInfo.print()
 	}
 	fmt.Printf("Example request: %s\n\n", a.exampleRequest)
 }

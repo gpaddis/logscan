@@ -98,7 +98,7 @@ func main() {
 	// Print the data to stdout
 	fmt.Println(Red("Potential threats found:"))
 	for _, a := range report {
-		a.printRecap()
+		a.printRecap(*verbosePtr)
 	}
 
 	if *strictPtr == true {

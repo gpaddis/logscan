@@ -27,8 +27,9 @@ func createLogEntry(s string) logEntry {
 // The patterns are matched both in lower and upper case.
 func hasPotentialThreats(raw string) bool {
 	threats := []string{"%20AND", "UNION", "SELECT%20", "CONCAT", "%20WHERE"}
+	raw = strings.ToUpper(raw)
 	for _, t := range threats {
-		if strings.Contains(strings.ToUpper(raw), t) {
+		if strings.Contains(raw, t) {
 			return true
 		}
 	}

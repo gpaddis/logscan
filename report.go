@@ -1,9 +1,7 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 
 	. "github.com/logrusorgru/aurora"
 )
@@ -43,24 +41,4 @@ func (r report) print() {
 	for _, a := range r {
 		a.printRecap()
 	}
-}
-
-// Scan all entries and return the ones containing suspicious
-// requests in a report.
-func scan(logfile string) report {
-	report := make(report)
-	f, err := os.Open(logfile)
-	check(err)
-	defer f.Close()
-
-	scanner := bufio.NewScanner(f)
-	for scanner.Scan() {
-		raw := scanner.Text()
-		if hasPotentialThreats(raw) {
-			l := createLogEntry(raw)
-			report.update(l)
-		}
-	}
-
-	return report
 }

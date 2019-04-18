@@ -20,6 +20,42 @@ func check(e error) {
 	}
 }
 
+// Scan all entries and return the ones containing suspicious
+// requests in a report.
+func scan(logfile string) report {
+	fmt.Printf("Scanning %s...\n", logfile)
+	report := make(report)
+	f, err := os.Open(logfile)
+	check(err)
+	defer f.Close()
+
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		raw := scanner.Text()
+		if hasPotentialThreats(raw) {
+			l := createLogEntry(raw)
+			report.update(l)
+		}
+	}
+
+	return report
+}
+
+// Parse the stdin and report each attack.
+func scanStdin(verbose bool) {
+	fmt.Println("Scanning stdin... (press CTRL+C to exit)")
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		l := createLogEntry(scanner.Text())
+		if hasPotentialThreats(l.uri) {
+			fmt.Printf("%s attack detected from %s: %s\n", Red("[+]"), Red(l.ip), l.uri)
+			if verbose == true {
+				fmt.Printf("Status: %s, Time: %s, User Agent: %s\n", l.status, l.datetime, l.agent)
+			}
+		}
+	}
+}
+
 func main() {
 	// Collect and parse parameters
 	accesslogPtr := flag.String("l", "", "The access.log file you want to analyze")
@@ -29,18 +65,7 @@ func main() {
 	flag.Parse()
 
 	if *stdinPtr == true {
-		fmt.Println("Scanning stdin... (press CTRL+C to exit)")
-		scanner := bufio.NewScanner(os.Stdin)
-		for scanner.Scan() {
-			if raw := scanner.Text(); hasPotentialThreats(raw) {
-				l := createLogEntry(raw)
-				fmt.Printf("%s attack detected from %s: %s\n", Red("[+]"), Red(l.ip), l.uri)
-				if *verbosePtr == true {
-					fmt.Printf("Status: %s, Time: %s, User Agent: %s\n", l.status, l.datetime, l.agent)
-				}
-			}
-		}
-		os.Exit(1)
+		scanStdin(*verbosePtr)
 	}
 
 	if *accesslogPtr == "" {
@@ -54,7 +79,6 @@ func main() {
 	}
 
 	// Scan the access.log file
-	fmt.Println("Scanning the access.log...")
 	report := scan(*accesslogPtr)
 	if len(report) == 0 {
 		fmt.Println(Green("No threats found."))

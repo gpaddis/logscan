@@ -62,6 +62,7 @@ func scanStdin(verbose bool) {
 			fmt.Printf("%s attack detected from %s: %s\n", Red("[+]"), Red(l.ip), l.uri)
 			if verbose == true {
 				fmt.Printf("Status: %s, Time: %s, User Agent: %s\n", l.status, l.datetime, l.agent)
+				// TODO: print ip geolocation on stdin scan
 			}
 		}
 	}

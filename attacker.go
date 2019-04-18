@@ -85,7 +85,7 @@ func (a *attacker) printRecap(verbose bool) {
 			fmt.Printf("\nno geolocation info available\n")
 		} else {
 			fmt.Printf("\nGeolocation info: %s, %s\n", loc["city"], loc["country"])
-			fmt.Printf("Company: %s\n", loc["org"])
+			fmt.Printf("Organization: %s\n", loc["org"])
 		}
 	}
 	fmt.Printf("Example request: %s\n\n", a.exampleRequest)

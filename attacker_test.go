@@ -28,7 +28,7 @@ func TestUpdateLastRequestShouldKeepMostRecentDateTime(t *testing.T) {
 
 	a.updateLastRequest("11/Mar/2019:12:39:28 +0100")
 	if a.lastRequest != "11/Mar/2019:12:39:28 +0100" {
-		t.Errorf("updateLastRequest should have updated the attacker field.")
+		t.Errorf("updateLastRequest should have updated the lastRequest field with the most recent date/time.")
 	}
 }
 

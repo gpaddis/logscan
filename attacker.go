@@ -34,9 +34,12 @@ func (a *attacker) updateStatusCodes(s string) {
 	}
 }
 
-// Update the datetime of the last request.
+// Update the datetime of the last request, if later than
+// the current lastRequest field.
 func (a *attacker) updateLastRequest(d string) {
-	a.lastRequest = d
+	if a.lastRequest < d {
+		a.lastRequest = d
+	}
 }
 
 // Return true if the status code is already in the slice.

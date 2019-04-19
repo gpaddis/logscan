@@ -19,6 +19,19 @@ func TestUpdateStatusCodes(t *testing.T) {
 	}
 }
 
+func TestUpdateLastRequestShouldKeepMostRecentDateTime(t *testing.T) {
+	a := attacker{lastRequest: "11/Mar/2019:12:36:29 +0100"}
+	a.updateLastRequest("11/Mar/2019:12:36:28 +0100")
+	if a.lastRequest != "11/Mar/2019:12:36:29 +0100" {
+		t.Errorf("updateLastRequest should have kept the most recent date/time.")
+	}
+
+	a.updateLastRequest("11/Mar/2019:12:39:28 +0100")
+	if a.lastRequest != "11/Mar/2019:12:39:28 +0100" {
+		t.Errorf("updateLastRequest should have updated the attacker field.")
+	}
+}
+
 func TestQueryIpApi(t *testing.T) {
 	res := queryIpApi("172.217.18.174")
 	expected := `{"as":"AS15169 Google LLC","city":"Frankfurt am Main","country":"Germany","countryCode":"DE","isp":"Google LLC","lat":50.1109,"lon":8.68213,"org":"Google LLC","query":"172.217.18.174","region":"HE","regionName":"Hesse","status":"success","timezone":"Europe/Berlin","zip":"60313"}`

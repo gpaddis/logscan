@@ -65,9 +65,9 @@ func queryIpApi(ip string) []byte {
 
 // Return a map of strings containing the geolocation info.
 func geoLocate(ip string) (geoLocationInfo, error) {
-	res := queryIpApi(ip)
-	var result map[string]interface{}
-	err := json.Unmarshal(res, &result)
+	j := queryIpApi(ip)
+	var result geoLocationInfo
+	err := json.Unmarshal(j, &result)
 	check(err)
 	if result["status"] == "fail" {
 		return nil, errors.New("Failed to geolocate the ip address.")
